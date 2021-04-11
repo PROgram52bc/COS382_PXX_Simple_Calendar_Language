@@ -39,3 +39,9 @@ test {
     }
     testLogging.showStandardStreams = true
 }
+
+// ANTLR plugin setting
+generateGrammarSource {
+    maxHeapSize = "64m"
+    arguments += ["-visitor", "-long-messages"]
+}

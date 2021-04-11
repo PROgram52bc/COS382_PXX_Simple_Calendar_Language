@@ -3,12 +3,32 @@
  */
 package scl;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
+public class App {
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        String testInput = "event Chorale\n"
+            + "attr1: var1\n"
+            + "attr2: var2\n"
+            + "\n"
+            + "event meeting\n"
+            + "on: Sep 11th, 1999\n"
+            + "location: \"Student Center\"\n";
+
+        SCLLexer lexer = new SCLLexer(CharStreams.fromString(testInput));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        SCLParser parser = new SCLParser(tokens);
+        parser.setBuildParseTree(true); // tell ANTLR to build a parse tree
+        ParseTree tree = parser.file();
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+        PropReader reader = new PropReader();
+        walker.walk(reader, tree);
     }
 }

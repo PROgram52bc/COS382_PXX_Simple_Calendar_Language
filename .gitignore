@@ -27,6 +27,7 @@ hs_err_pid*
 
 # Ignore Gradle build output directory
 build
+bin
 
 **/build/
 !src/**/build/
@@ -43,3 +44,4 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
+.*
