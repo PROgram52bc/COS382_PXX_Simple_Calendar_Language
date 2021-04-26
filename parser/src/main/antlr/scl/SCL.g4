@@ -14,14 +14,11 @@ eventhead: 'event' ID;
 
 eventattr: ID ':' value;
 
-value:	words	# wordvalue
+value:	STRING	# stringvalue
 	|	list	# listvalue
-	|	STRING	# stringvalue
-	|	~(NL)+	# textvalue
 	;
 
-words: (WORD)+; 
-list: WORD (',' WORD)*;
+list: STRING (',' STRING)*;
 
 STRING: '"' .*? '"';
 ID: ALPHA (ALPHA|DIGIT)*;

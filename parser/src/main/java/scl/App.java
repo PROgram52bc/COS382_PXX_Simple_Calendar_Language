@@ -14,11 +14,11 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class App {
     public static void main(String[] args) {
         String testInput = "event Chorale\n"
-            + "attr1: var1\n"
-            + "attr2: var2\n"
+            + "attr1: \"var1\"\n"
+            + "on: \"Monday\", \"Wednesday\", \"Fri\"\n"
             + "\n"
             + "event meeting\n"
-            + "on: Sep 11th, 1999\n"
+            + "on: \"Sep 11th, 1999\"\n"
             + "location: \"Student Center\"\n";
 
         SCLLexer lexer = new SCLLexer(CharStreams.fromString(testInput));
