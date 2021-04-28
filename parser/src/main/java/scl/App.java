@@ -6,6 +6,7 @@ package scl;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.antlr.v4.runtime.CharStreams;
@@ -18,16 +19,20 @@ import biweekly.ICalendar;
 public class App {
     public static void main(String[] args) {
         // TODO: add command-line parameters <2021-04-27, David Deng> //
-        String testInput 
-            = "event Chorale\n"
-                + "from: \"May 1, 2021 7:00PM\"\n"
-                + "to: \"May 1, 2021 10:00PM\"\n"
-            + "\n";
-            // + "event meeting\n"
-            //     + "on: \"Sep 11th, 1999\"\n"
-            //     + "from: \"Sep 11th, 1999\"\n";
+        // String testInput 
+        //     = "event Chorale\n"
+        //         + "from: \"May 1, 2021 7:00PM\"\n"
+        //         + "to: \"May 1, 2021 10:00PM\"\n"
+        //     + "\n";
 
-        SCLLexer lexer = new SCLLexer(CharStreams.fromString(testInput));
+        SCLLexer lexer;
+        try {
+            // lexer = new SCLLexer(CharStreams.fromString(testInput));
+            lexer = new SCLLexer(CharStreams.fromFileName("test.scl"));
+        } catch (IOException e) {
+            System.out.println("Failed to open file. " + e.toString());
+            return;
+        }
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SCLParser parser = new SCLParser(tokens);
         parser.setBuildParseTree(true); // tell ANTLR to build a parse tree
