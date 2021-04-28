@@ -10,7 +10,12 @@ events: event (NL NL+ event)*;
 
 event: eventhead (NL eventattr)*;
 
-eventhead: 'event' ID;
+eventhead: eventtype 'event' ID;
+
+eventtype: 	'recurring' 
+	|		'partial' 
+	|		'general' 
+	|;
 
 eventattr: ID ':' value;
 
