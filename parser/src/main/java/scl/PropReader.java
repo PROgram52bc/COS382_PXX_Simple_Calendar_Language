@@ -1,17 +1,19 @@
 package scl;
 
-import java.util.Hashtable;
-import java.util.LinkedList;
+import java.util.*;
 import java.lang.NullPointerException;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import biweekly.property.*;
+import biweekly.component.*;
+import biweekly.util.*;
+import biweekly.io.*;
 import biweekly.ICalendar;
-import biweekly.component.VEvent;
 
 public class PropReader extends SCLBaseListener {
+
     ///////////////////////////
     //  initialize calendar  //
     ///////////////////////////
@@ -30,8 +32,31 @@ public class PropReader extends SCLBaseListener {
     public VEvent getEvent(String eventName) {
         return events.get(eventName);
     }
+    public TimezoneAssignment getTimezone(String timezoneId) {
+        String[] ids = TimeZone.getAvailableIDs();
+        if (!Arrays.asList(ids).contains(timezoneId)) {
+            System.out.println("Timezone id " + timezoneId + " not available. Available ids:");
+            for (String id : ids) {
+                System.out.println("- " + id);
+            }
+            return null;
+        }
+        TimeZone tz = TimeZone.getTimeZone(timezoneId);
+        TimezoneAssignment tza = TimezoneAssignment.download(tz, false); // don't need to suit for MS outlook
+        return tza;
+    }
     public ICalendar getCalendar() {
         ICalendar ical = new ICalendar();
+
+        // set timezone
+        // TODO: parameterize the timezone information
+        // TODO: add a timezone
+        TimezoneAssignment timezone = getTimezone("America/New_York");
+        TimezoneInfo tzinfo = new TimezoneInfo();
+        tzinfo.setDefaultTimezone(timezone);
+        ical.setTimezoneInfo(tzinfo);
+
+        // add all events to the calendar
         for (VEvent e : events.values()) {
             ical.addEvent(e);
         }
