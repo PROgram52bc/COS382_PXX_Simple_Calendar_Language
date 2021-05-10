@@ -1,7 +1,9 @@
 package scl;
+import scl.util.*;
 
 import java.util.*;
 import java.lang.NullPointerException;
+import java.util.stream.Collectors;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.text.SimpleDateFormat;
@@ -12,32 +14,37 @@ import biweekly.util.*;
 import biweekly.io.*;
 import biweekly.ICalendar;
 
+/**
+ * The main listener class that reads properties in an event
+ * */
 public class PropReader extends SCLBaseListener {
+    /** a map to store temporary attributes for the current event */
+    private final HashMap<String, ProxyMap> events;
+    // TODO: how to store attributes like event type? Using a leading underscore? <2021-05-08, David Deng> //
+    private ProxyMap global;
+    private ProxyMap currentEvent;
 
-    ///////////////////////////
-    //  initialize calendar  //
-    ///////////////////////////
-    private final Hashtable<String, AttributesHandler> handlers;
-    private final Hashtable<String, VEvent> events;
-    private String currentEventName;
-    private String currentEventType;
-    private String currrentAttributeName;
+    private ProxyMap getEvent(String eventName) {
+        return events.getOrDefault(eventName, null);
+    }
 
     public PropReader() {
-        events = new Hashtable<>();
-        handlers = new Hashtable<>();
-        handlers.put("from", new GeneralAttributesHandler());
-        handlers.put("to", new GeneralAttributesHandler());
+        events = new HashMap<>();
+        global = new ProxyMap();
+        currentEvent = new ProxyMap();
     }
-    public VEvent getEvent(String eventName) {
-        return events.get(eventName);
-    }
-    public TimezoneAssignment getTimezone(String timezoneId) {
+
+    /**
+     * Get a {@link TimezoneAssignment} object based on a timezone id
+     * @param timezoneId an id for the {@link TimeZone} class
+     * @return a {@link TimezoneAssignment} object, null if id is invalid
+     * */
+    public TimezoneAssignment getTimezoneAssignment(String timezoneId) {
         String[] ids = TimeZone.getAvailableIDs();
         if (!Arrays.asList(ids).contains(timezoneId)) {
-            System.out.println("Timezone id " + timezoneId + " not available. Available ids:");
+            Debugger.log(1, "Timezone id " + timezoneId + " not available. Available ids:");
             for (String id : ids) {
-                System.out.println("- " + id);
+                Debugger.log(1, "- " + id);
             }
             return null;
         }
@@ -45,75 +52,62 @@ public class PropReader extends SCLBaseListener {
         TimezoneAssignment tza = TimezoneAssignment.download(tz, false); // don't need to suit for MS outlook
         return tza;
     }
-    public ICalendar getCalendar() {
-        ICalendar ical = new ICalendar();
-
-        // set timezone
-        // TODO: parameterize the timezone information
-        // TODO: add a timezone
-        TimezoneAssignment timezone = getTimezone("America/New_York");
-        TimezoneInfo tzinfo = new TimezoneInfo();
-        tzinfo.setDefaultTimezone(timezone);
-        ical.setTimezoneInfo(tzinfo);
-
-        // add all events to the calendar
-        for (VEvent e : events.values()) {
-            ical.addEvent(e);
+    /**
+     * Get an iterable of the events parsed by the reader, each represented by a {@link ProxyMap}
+     *
+     * @return an iterable containing a copy of all the {@link ProxyMap} produced by the reader.
+     **/
+    public Iterable<ProxyMap> getEventProxyMaps() {
+        List<ProxyMap> copy = new ArrayList<>();
+        for (ProxyMap pm: events.values()) {
+            copy.add(new ProxyMap(pm));
         }
-        return ical;
+        return copy;
     }
-    @Override
-    public void enterEvent(SCLParser.EventContext ctx) {
-        System.out.println("Entering event. Attribute count: " + ((ctx.getChildCount() - 1)/2));
-    }
+
     @Override
     public void enterEventhead(SCLParser.EventheadContext ctx) {
-        System.out.println("Entering Eventhead. Event name: " + ctx.ID().getText());
-        System.out.println("event type: " + ctx.eventtype().getText());
-        currentEventName = ctx.ID().getText();
-        currentEventType = ctx.eventtype().getText();
-        if (currentEventType.isEmpty()) {
-            currentEventType = "general";
-        }
-        events.put(currentEventName, new VEvent());
-        events.get(currentEventName).setSummary(currentEventName);
+        // // event type currently not used
+        // currentEventType = ctx.eventtype().getText();
+        // if (currentEventType.isEmpty()) {
+        //     currentEventType = "general";
+        // }
+        Debugger.log("event type: " + ctx.eventtype().getText());
+
+        String name = ctx.ID().getText();
+        Debugger.log("Event name: " + name);
+        currentEvent.put("name", name);
     }
     @Override
     public void enterEventattr(SCLParser.EventattrContext ctx) {
-        currrentAttributeName = ctx.ID().getText();
-        System.out.print("Entering EventAttribute: ");
-        System.out.println(currrentAttributeName);
+        String attributeName = ctx.ID().getText();
+        Debugger.log("Attribute name: " + attributeName);
+        // remove quotes
+        // TODO: support more types of value? add optional quote requirement? <2021-05-08, David Deng> //
+        String attributeValue = ctx.value().getText()
+            .replaceAll("^\"", "")
+            .replaceAll("\"$", "");
+        currentEvent.put(attributeName, attributeValue);
     }
     @Override
     public void enterStringvalue(SCLParser.StringvalueContext ctx) {
-        System.out.println("Entering string value: " + ctx.getText());
-        String value = ctx.getText().replaceAll("^\"", "").replaceAll("\"$", "");
-        AttributesHandler handler;
-        try {
-            handler = handlers.get(currrentAttributeName);
-        } catch (NullPointerException e) {
-            System.out.println("currrentAttributeName: " + currrentAttributeName);
-            System.out.println("Null pointer exception: " + e.toString());
-            return;
-        }
-        handler.parseAttribute(currrentAttributeName, value, events.get(currentEventName));
-    }
-    @Override
-    public void enterListvalue(SCLParser.ListvalueContext ctx) {
-        System.out.println("Entering list value (unhandled): " + ctx.getText());
-        for (TerminalNode s : ctx.list().STRING()) {
-            System.out.println("-> " + s.getText());
-        }
-    }
-    @Override
-    public void exitEventattr(SCLParser.EventattrContext ctx) {
-        System.out.print("Exiting EventAttribute: ");
-        System.out.println(ctx.getText());
+        // Debugger.log("Entering string value: " + ctx.getText());
+        // AttributesHandler handler;
+        // try {
+        //     handler = handlers.get(currrentAttributeName);
+        // } catch (NullPointerException e) {
+        //     Debugger.log("currrentAttributeName: " + currrentAttributeName);
+        //     Debugger.log("Null pointer exception: " + e.toString());
+        //     return;
+        // }
+        // handler.parseAttribute(currrentAttributeName, value, events.get(currentEvent.get("name")));
     }
     @Override
     public void exitEvent(SCLParser.EventContext ctx) {
         // end of an event
-        System.out.println("Exiting Event: " + currentEventName);
-        System.out.println(events.get(currentEventName));
+        Debugger.log("Exiting Event: " + currentEvent.get("name"));
+        Debugger.log(events.get(currentEvent.get("name")));
+        events.put(currentEvent.get("name"), new ProxyMap(currentEvent));
+        currentEvent.clear();
     }
 }

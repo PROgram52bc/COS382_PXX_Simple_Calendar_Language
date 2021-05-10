@@ -1,12 +1,11 @@
-// package scl.handlers;
-
+// package scl;
 // import java.util.Date;
 // import java.text.SimpleDateFormat;
 // import biweekly.component.VEvent;
 // import java.text.ParseException;
 
-// public class GeneralAttributesHandler implements AttributesHandler {
-//     public VEvent handle(String attributeName, String attributeValue, VEvent event) {
+// public class ToHandler implements AttributesHandler {
+//     public VEvent parseAttribute(String attributeName, String attributeValue, VEvent event) {
 //         SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy hh:mma");
 //         try {
 //             switch (attributeName) {

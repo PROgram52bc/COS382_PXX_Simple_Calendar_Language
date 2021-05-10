@@ -1,7 +1,9 @@
 package scl.handlers;
+import scl.util.ProxyMap;
 
 import biweekly.component.VEvent;
 import java.util.List;
+import java.util.Collections;
 
 /** 
  * The interface of a handler that parses a specific attribute in an event.
@@ -22,7 +24,7 @@ public interface AttributesHandler {
      *
 	 * @throws 
      **/
-    public void handle(VEvent vEvent, ProxyMap proxyMap);   
+    void handle(VEvent vEvent, ProxyMap proxyMap);   
 
     /**
      * Describes the keywords that this handler would require to be present in
@@ -35,7 +37,7 @@ public interface AttributesHandler {
      *
 	 * @return a list of required keywords
      **/
-    public List<String> requires();
+    List<String> requires();
 
     /**
      * Describes the keywords that this handler would reference in the {@link
@@ -43,5 +45,7 @@ public interface AttributesHandler {
      *
      * @return a list of optional keywords
      **/
-    public List<String> references();
+    default List<String> references() {
+        return Collections.emptyList();
+    }
 }
