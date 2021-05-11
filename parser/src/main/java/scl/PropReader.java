@@ -2,35 +2,34 @@ package scl;
 import scl.util.*;
 
 import java.util.*;
-import java.lang.NullPointerException;
-import java.util.stream.Collectors;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import biweekly.property.*;
-import biweekly.component.*;
-import biweekly.util.*;
 import biweekly.io.*;
-import biweekly.ICalendar;
 
 /**
  * The main listener class that reads properties in an event
  * */
 public class PropReader extends SCLBaseListener {
-    /** a map to store temporary attributes for the current event */
+    // a map to store temporary attributes for all events read
     private final HashMap<String, ProxyMap> events;
-    // TODO: how to store attributes like event type? Using a leading underscore? <2021-05-08, David Deng> //
-    private ProxyMap global;
+
+    // TODO: Utilize the global map to store timezone information <2021-05-11, David Deng> //
+    // private ProxyMap global;
+
+    // any key starting with an underscore '_' is reserved
     private ProxyMap currentEvent;
 
-    private ProxyMap getEvent(String eventName) {
-        return events.getOrDefault(eventName, null);
+    /**
+     * get a copy of the specified event.
+     * @param eventName the name of the event to be retrieved.
+     * @return a {@link ProxyMap} representing all attributes of the event. Null if the event doesn't exist.
+     **/
+    public ProxyMap getEvent(String eventName) {
+        ProxyMap event = events.getOrDefault(eventName, null);
+        return event == null ? null : new ProxyMap(event);
     }
 
     public PropReader() {
         events = new HashMap<>();
-        global = new ProxyMap();
+        // global = new ProxyMap();
         currentEvent = new ProxyMap();
     }
 
@@ -67,47 +66,34 @@ public class PropReader extends SCLBaseListener {
 
     @Override
     public void enterEventhead(SCLParser.EventheadContext ctx) {
-        // // event type currently not used
-        // currentEventType = ctx.eventtype().getText();
-        // if (currentEventType.isEmpty()) {
-        //     currentEventType = "general";
-        // }
-        Debugger.log("event type: " + ctx.eventtype().getText());
-
-        String name = ctx.ID().getText();
-        Debugger.log("Event name: " + name);
-        currentEvent.put("name", name);
+        // event type currently not used
+        String eventType = ctx.eventtype().getText();
+        if (eventType.isEmpty()) {
+            eventType = "full"; // full, partial
+        }
+        String eventName = ctx.ID().getText();
+        Debugger.log(2, "eventType: " + eventType);
+        Debugger.log(2, "eventName: " + eventName);
+        currentEvent.put("_type", eventType); // hidden attribute
+        currentEvent.put("_name", eventName);
     }
     @Override
     public void enterEventattr(SCLParser.EventattrContext ctx) {
         String attributeName = ctx.ID().getText();
-        Debugger.log("Attribute name: " + attributeName);
-        // remove quotes
-        // TODO: support more types of value? add optional quote requirement? <2021-05-08, David Deng> //
+        // remove surrounding angle brackets from the value
         String attributeValue = ctx.value().getText()
-            .replaceAll("^\"", "")
-            .replaceAll("\"$", "");
+            .replaceAll("^<", "")
+            .replaceAll(">$", "");
         currentEvent.put(attributeName, attributeValue);
-    }
-    @Override
-    public void enterStringvalue(SCLParser.StringvalueContext ctx) {
-        // Debugger.log("Entering string value: " + ctx.getText());
-        // AttributesHandler handler;
-        // try {
-        //     handler = handlers.get(currrentAttributeName);
-        // } catch (NullPointerException e) {
-        //     Debugger.log("currrentAttributeName: " + currrentAttributeName);
-        //     Debugger.log("Null pointer exception: " + e.toString());
-        //     return;
-        // }
-        // handler.parseAttribute(currrentAttributeName, value, events.get(currentEvent.get("name")));
+        Debugger.log(3, "attributeName: " + attributeName);
+        Debugger.log(3, "attributeValue: " + attributeValue);
     }
     @Override
     public void exitEvent(SCLParser.EventContext ctx) {
         // end of an event
-        Debugger.log("Exiting Event: " + currentEvent.get("name"));
-        Debugger.log(events.get(currentEvent.get("name")));
-        events.put(currentEvent.get("name"), new ProxyMap(currentEvent));
+        String eventName = currentEvent.get("_name");
+        Debugger.log(2, "Exiting event: " + eventName);
+        events.put(eventName, new ProxyMap(currentEvent));
         currentEvent.clear();
     }
 }

@@ -14,20 +14,16 @@ eventhead: eventtype 'event' ID (':' parents)*;
 
 parents: ID (',' ID)*;
 
-eventtype: 	'recurring' 
-	|		'partial' 
-	|		'general' 
+eventtype: 	'recurring'
+	|		'partial'
+	|		'general'
 	|;
 
-eventattr: ID ':' value;
+eventattr: ID ':' value ;
 
-value:	STRING	# stringvalue
-	|	list	# listvalue
-	;
+value: FIELD;
 
-list: STRING (',' STRING)*;
-
-STRING: '"' .*? '"';
+FIELD: '<' (~[>]|'\\<'|'\\>')* '>';
 ID: ALPHA (ALPHA|DIGIT)*;
 WORD: (ALPHA|DIGIT)+;
 NL: '\n';
