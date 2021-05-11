@@ -2,17 +2,17 @@ package scl.parsers;
 
 import java.util.LinkedList;
 
-/** 
+/**
  * A utility class to combine multiple parsers together.
  **/
-public class MultiParser<T> implements StringParser<T> {
-    private final LinkedList<StringParser<T>> parsers;
+public class MultiParser<T> implements Parser<T> {
+    private final LinkedList<Parser<T>> parsers;
 
     public MultiParser() {
         parsers = new LinkedList<>();
     }
 
-    /** 
+    /**
      * Adds a parser to the current {@link MultiParser}.
      * @param parser the parser to be added.
      * @return the current object.
@@ -28,9 +28,9 @@ public class MultiParser<T> implements StringParser<T> {
      *      .addParser(parser2);
      * }
      * </pre>
-     * 
+     *
      * */
-    public MultiParser<T> addParser(StringParser<T> parser) {
+    public MultiParser<T> addParser(Parser<T> parser) {
         parsers.add(parser);
         return this;
     }
@@ -42,7 +42,7 @@ public class MultiParser<T> implements StringParser<T> {
 	 * @return a parsed result, null if all parsers failed to parse the given input.
      **/
     public final T parse(String input) {
-        for (StringParser<T> parser: parsers) {
+        for (Parser<T> parser: parsers) {
             T result = parser.parse(input);
             if (result != null) {
                 return result;

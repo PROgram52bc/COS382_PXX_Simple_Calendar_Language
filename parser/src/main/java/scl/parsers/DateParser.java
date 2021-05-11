@@ -21,7 +21,7 @@ public class DateParser extends MultiParser<LocalDate> {
 	 * Multiple instances of classes derived from this class should be added
 	 * to a {@link MultiParser} to achieve fallback effect.
 	 **/
-	public static class Base implements StringParser<LocalDate> {
+	public static class Base implements Parser<LocalDate> {
 		protected String pattern;
 
 		/**

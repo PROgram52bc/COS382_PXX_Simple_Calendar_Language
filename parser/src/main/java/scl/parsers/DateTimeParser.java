@@ -21,11 +21,11 @@ public class DateTimeParser extends MultiParser<LocalDateTime> {
 	 * Multiple instances of classes derived from this class should be added
 	 * to a {@link MultiParser} to achieve fallback effect.
 	 **/
-	public static class Base implements StringParser<LocalDateTime> {
+	public static class Base implements Parser<LocalDateTime> {
 		protected String pattern;
 
 		/**
-		 * Helper function to parse a string with a specified {@link Formatter} object 
+		 * Helper function to parse a string with a specified {@link Formatter} object
 		 **/
 		protected LocalDateTime parseWithFormatter(String input, DateTimeFormatter formatter) {
 			try {

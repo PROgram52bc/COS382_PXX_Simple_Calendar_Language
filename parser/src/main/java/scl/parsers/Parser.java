@@ -1,9 +1,9 @@
 package scl.parsers;
 
-/** 
+/**
  * The main interface for parsers used in {@link AttributesHandler}
  **/
-interface StringParser<T> {
+interface Parser<T> {
     /**
      * Parses a string value into a {@link T} object.
 	 * @param input the input string.

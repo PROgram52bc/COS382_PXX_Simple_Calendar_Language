@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-public class ListParser implements StringParser<List<String>> {
+public class ListParser implements Parser<List<String>> {
 
 	private String delimiter;
 	private boolean trim;

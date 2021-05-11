@@ -4,17 +4,17 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class MultiParserTest {
-    class NullParser implements StringParser<Integer> {
+    class NullParser implements Parser<Integer> {
         public Integer parse(String input) {
             return null;
         }
     }
-    class IntegerParser implements StringParser<Integer> {
+    class IntegerParser implements Parser<Integer> {
         public Integer parse(String input) {
             return Integer.valueOf(input);
         }
     }
-    class FortyTwoParser implements StringParser<Integer> {
+    class FortyTwoParser implements Parser<Integer> {
         public Integer parse(String input) {
             return Integer.valueOf(42);
         }
