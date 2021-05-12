@@ -1,4 +1,6 @@
 package scl;
+// TODO: change the package name <2021-05-10, David Deng> //
+// package com.gmail.daviddenghaotian.scl;
 import scl.util.*;
 import scl.handlers.*;
 
@@ -43,6 +45,7 @@ public class App {
         // Create EventFactory and register handlers
         EventFactory eventFactory = new EventFactory();
         eventFactory.registerHandler(new FromHandler());
+        eventFactory.registerHandler(new ToHandler());
 
         // parse the proxyMaps
         ICalendar ical = new ICalendar();

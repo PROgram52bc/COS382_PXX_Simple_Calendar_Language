@@ -53,7 +53,7 @@ public class DateTimeParserNoYear extends MultiParser<LocalDateTime> {
 	 **/
 	public static class Common extends Base {
 		public Common() {
-			super("MMM d, hh:mm a");
+			super("MMM d,[ ]hh:mm[ ]a");
 		}
 	}
 

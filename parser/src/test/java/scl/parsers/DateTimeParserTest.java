@@ -27,6 +27,18 @@ public class DateTimeParserTest {
     }
 
     @Test
+	public void testCommonNoSpace() {
+        String input = "Jul 4,2021 11:55PM";
+        LocalDateTime dt = parser.parse(input);
+        assertNotNull("parser returned null", dt);
+        assertEquals("year should be correct", 2021, dt.getYear());
+        assertEquals("month should be correct", 7, dt.getMonthValue());
+        assertEquals("date should be correct", 4, dt.getDayOfMonth());
+        assertEquals("hour should be correct", 23, dt.getHour());
+        assertEquals("minute should be correct", 55, dt.getMinute());
+    }
+
+    @Test
 	public void testMilitary() {
         String input = "2021-7-4 23:55";
         LocalDateTime dt = parser.parse(input);

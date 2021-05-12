@@ -57,7 +57,7 @@ public class TimeParser extends MultiParser<LocalTime> {
 	 **/
 	public static class Common extends Base {
 		public Common() {
-			super("hh:mm a");
+			super("hh:mm[ ]a");
 		}
 	}
 	/**

@@ -56,7 +56,7 @@ public class DateTimeParser extends MultiParser<LocalDateTime> {
 	 **/
 	public static class Common extends Base {
 		public Common() {
-			super("MMM d, yyyy hh:mm a");
+			super("MMM d,[ ]yyyy h:mm[ ]a");
 		}
 	}
 	/**
