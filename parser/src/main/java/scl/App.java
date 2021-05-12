@@ -7,6 +7,8 @@ import scl.handlers.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.time.ZoneId;
+
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -16,6 +18,8 @@ import biweekly.ICalendar;
 import biweekly.ICalVersion;
 import biweekly.ValidationWarnings;
 import biweekly.component.VEvent;
+import biweekly.io.TimezoneInfo;
+import biweekly.io.TimezoneAssignment;
 
 public class App {
     public static void main(String[] args) {
@@ -54,6 +58,14 @@ public class App {
             ical.addEvent(event);
         });
 
+        // add timezone
+        // TODO: allow overriding default output timezone? <2021-05-11, David Deng> //
+        String defaultZoneId = ZoneId.systemDefault().getId();
+        TimezoneAssignment timezone = reader.getTimezoneAssignment(defaultZoneId);
+        TimezoneInfo tzinfo = new TimezoneInfo();
+        tzinfo.setDefaultTimezone(timezone);
+        ical.setTimezoneInfo(tzinfo);
+
         // validate the calendar object
         ValidationWarnings warnings = ical.validate(ICalVersion.V2_0);
         if (!warnings.isEmpty()) {
@@ -62,6 +74,7 @@ public class App {
 
         Debugger.log(2, "Calendar content below ------------");
         Debugger.log(2, ical.toString());
+        Debugger.log(2, ical.write());
 
         // write to output file
         try {
