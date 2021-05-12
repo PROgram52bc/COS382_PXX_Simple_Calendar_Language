@@ -2,6 +2,8 @@ package scl;
 import scl.util.*;
 
 import java.util.HashMap;
+import java.util.HashSet;
+
 import biweekly.component.VEvent;
 import scl.handlers.AttributesHandler;
 import scl.exceptions.ConflictingHandlerException;
@@ -9,9 +11,11 @@ import scl.util.ProxyMap;
 
 public class EventFactory {
     private final HashMap<String, AttributesHandler> keywords;
+    private final HashSet<String> optionals;
 
     public EventFactory() {
         keywords = new HashMap<>();
+        optionals = new HashSet<>();
     }
 
     /**
@@ -30,6 +34,13 @@ public class EventFactory {
                 throw new ConflictingHandlerException("keyword " + keyword + " has already been registered.");
             } else {
                 keywords.put(keyword, handler);
+                Debugger.log(1, "registering required keyword: " + keyword);
+            }
+        }
+        for (String optional: handler.references()) {
+            if (optionals.add(optional)) {
+                // if added successfully
+                Debugger.log(1, "registering optional keyword: " + optional);
             }
         }
     }
@@ -48,8 +59,10 @@ public class EventFactory {
                 // the given keyword has a corresponding handler
                 AttributesHandler handler = keywords.get(keyword);
                 handler.handle(initialEvent, eventAttributes);
+            } else if (optionals.contains(keyword)) {
+                Debugger.log(3, "Non-required keyword: " + keyword);
             } else {
-                Debugger.log(3, "No handler corresponding to keyword: " + keyword);
+                Debugger.log(3, "Unhandled keyword: " + keyword);
             }
         }
         return initialEvent;

@@ -50,6 +50,10 @@ public class App {
         EventFactory eventFactory = new EventFactory();
         eventFactory.registerHandler(new FromHandler());
         eventFactory.registerHandler(new ToHandler());
+        eventFactory.registerHandler(new EveryHandler());
+        eventFactory.registerHandler(new SummaryHandler());
+        eventFactory.registerHandler(new DescriptionHandler());
+        eventFactory.registerHandler(new LocationHandler());
 
         // parse the proxyMaps
         ICalendar ical = new ICalendar();

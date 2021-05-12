@@ -76,6 +76,7 @@ public class PropReader extends SCLBaseListener {
         Debugger.log(2, "eventName: " + eventName);
         currentEvent.put("_type", eventType); // hidden attribute
         currentEvent.put("_name", eventName);
+        currentEvent.put("summary", eventName);
     }
     @Override
     public void enterEventattr(SCLParser.EventattrContext ctx) {

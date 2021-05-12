@@ -9,6 +9,7 @@ import biweekly.component.VEvent;
 import java.time.LocalDateTime;
 
 public class FromHandler implements AttributesHandler {
+    @Override
     public void handle(VEvent event, ProxyMap attributes) {
         ZoneId zoneId = attributes.containsKey("_timezone") ?
             ZoneId.of(attributes.get("_timezone")) :
@@ -25,6 +26,7 @@ public class FromHandler implements AttributesHandler {
         Date start = Date.from(local.atZone(zoneId).toInstant());
         event.setDateStart(start);
     }
+    @Override
     public List<String> requires() {
         return Collections.singletonList("from");
     }
