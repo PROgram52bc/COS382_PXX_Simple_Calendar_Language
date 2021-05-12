@@ -111,15 +111,15 @@ public class EveryHandler implements AttributesHandler {
         // A more elaborate idea:
         // Maybe introduce another interface that builds recurrence rule (similar to the Parser interface) ? <2021-05-12, David Deng> //
         // handle until ('until' keyword)
-        String untilValue = attributes.getOrDefault("until", null);
+        String untilValue = attributes.getOrDefault("until", "");
         builder = handleUntil(untilValue, builder);
 
         // handle count ('for' keyword)
-        String countValue = attributes.getOrDefault("for", null);
-        if (untilValue == null) {
+        String countValue = attributes.getOrDefault("for", "");
+        if (untilValue.isEmpty()) {
             // only if 'until' is not specified
             builder = handleCount(countValue, builder);
-        } else if (countValue != null && untilValue != null) {
+        } else if (!countValue.isEmpty() && !untilValue.isEmpty()) {
             Debugger.log(1, "'until' and 'for' cannot both be specified, the value of 'for' is ignored: " + countValue);
         }
 
