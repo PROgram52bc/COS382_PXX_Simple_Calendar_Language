@@ -1,15 +1,55 @@
-event Chorale
-summary: <Chorale Rehearsal>
-location: <Smith Hermenson building>
-description: <Please please please
-do not be late>
-from: <May 1, 2021 7:00PM>
-to: <May 1, 2021 10:00PM>
-every: <1 week>
-until: <May 1, 2022>
-for: <3>
-scheduled: <M, W, F>
-
 event COS382
-from: <May 7, 2021 9:00AM>
-to:   <May 7, 2021 9:50AM>
+summary:		<Language Structures presentation>
+description:	<Doing a demo about the translator project>
+location:		<Euler 200>
+from: 			<May 12, 2021 10:00 AM>
+to:   			<May 12, 2021 11:50 AM>
+
+event Church
+location: 		<Muncie>
+description: 	<Please please please do not be late>
+from: 			<May 16, 2021 8:30 AM>
+to: 			<May 16, 2021 12:00 PM>
+every: 			<1 week>
+scheduled:		<U>
+
+
+event Commencement
+summary:		<Graduation Ceremony>
+location:		<KSAC>
+description:	<Happy graduation!
+     |""-..._____
+     '-.____    _````"""""'`|
+         \  ``` ``"---... _ |
+         |              /  /#\ 
+         }--..______..-{   ###
+        }}}}} _   _ {{{{{
+        }}}}  6   6  {{{{
+       {{{{{    ^    }}}}}
+      {{{{{{\  -=-  /}}}}}}
+      {{{{{{{;.___.;}}}}}}}
+       {{{{{{{)   (}}}}}}}'
+        `""'"':   :'"'"'`
+after/jgs      `@`
+
+,_
+| `""---..._____
+'-...______    _````"""""""'`|
+       \   ```` ``"---...__  |
+       |`              |   ``!
+       |               |     A 
+       |               /\   /#\ 
+       /`--..______..-'  |  ###
+      |   /  `\    /`--. |  ###
+     _|  |  .-;`-./;-.  ||  ###
+    / \  \ /\_|    |_/\ //\ ##'
+    |  `-' \__/ _  \__/ |  |`#
+    \_,                 /_/
+       `\              /
+         '.  '.__.'  .'
+  jgs      `-,____,-'
+            /"""I""\ 
+           /`---'--'\ 
+>
+from:			<May 15, 10:00 AM>
+to:				<May 15, 2:00 PM>
